@@ -6,3 +6,4 @@ pandas
 tabulate
 streamlit_chat
 chromadb 
+faiss-cpu
