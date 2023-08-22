@@ -32,7 +32,8 @@ dealer_1 = loader.load()
 
 # Set up OpenAI embeddings and create vectorstore
 embeddings = OpenAIEmbeddings()
-persist_directory = r'dealer1\inventry'
+# persist_directory = r'dealer1\inventry'
+persist_directory = os.path.join(os.getcwd(), 'dealer1', 'inventry')
 vectordb = Chroma(
     persist_directory=persist_directory,
     embedding_function=embeddings
@@ -69,9 +70,6 @@ qa = ConversationalRetrievalChain.from_llm(
     condense_question_prompt=CUSTOM_QUESTION_PROMPT
 #     return_source_documents=True
 )
-
-
-
 response_container = st.container()
 container = st.container()
 chat_history=[] 
