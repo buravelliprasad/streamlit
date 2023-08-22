@@ -26,7 +26,7 @@ import os
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
 # Load CSV data
-file = r'C:\Users\Prasad\Desktop\Streamlit_ai\dealer_1_inventry.csv'
+file = r'dealer_1_inventry.csv'
 loader = CSVLoader(file_path=file)
 dealer_1 = loader.load()
 
