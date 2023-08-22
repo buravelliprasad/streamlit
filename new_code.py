@@ -57,29 +57,26 @@ def save_chat_to_csv(user_name, user_input, output):
         writer.writerow({"user_name": user_name, "question": user_input, "answer": output})
 
 # Initialize conversation history with intro_prompt
-template_string = """You are a business development manager role \
-working in a {industry} you get a text enquiry that is delimited by triple backticks \
-You should answer in a style that is {style}. \
-text: ```{text}```
-"""
-industry="""car dealer"""
-style = """American English \
-in a calm and respectful tone
-"""
-context = """
-Hello
-"""
-final_prompt = template_string.format(style=style, text=context, industry=industry) 
-
+custom_template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. At the end of standalone question add this 'Answer the question in english language.' If you do not know the answer reply with 'I am sorry'.
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:"""
+CUSTOM_QUESTION_PROMPT = PromptTemplate.from_template(custom_template)
+qa = ConversationalRetrievalChain.from_llm(
+    llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo-16k'),
+    retriever=retriever,
+    condense_question_prompt=CUSTOM_QUESTION_PROMPT
+#     return_source_documents=True
+)
 response_container = st.container()
 container = st.container()
-chat_history = []  
-
+chat_history=[] 
 def conversational_chat(query):
+    
     result = qa({"question": query, "chat_history": chat_history})
     st.session_state.history.append((query, result["answer"]))
     return result["answer"]
-
 
 with container:
     
