@@ -1,39 +1,27 @@
+
+from langchain.llms import OpenAI
 import streamlit as st
-from langchain.embeddings.openai import OpenAIEmbeddings
+from streamlit_chat import message
 from langchain.chat_models import ChatOpenAI
+from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains import ConversationalRetrievalChain
-from langchain.vectorstores import FAISS
 from langchain.document_loaders.csv_loader import CSVLoader
+from langchain.vectorstores import FAISS
+from langchain.vectorstores import Chroma
+from langchain import PromptTemplate
+import tempfile
 import pandas as pd
 import os
-from streamlit_chat import message
-import csv
-
-# # st.image("socialai.jpg")
-
-# Set OpenAI API key
-user_api_key = os.environ.get('')
-
-# Load CSV data
-csv_file_path = r"C:\Users\shahs\OneDrive\Desktop\strem_ai\2013_Inventory.csv"
-data = pd.read_csv(csv_file_path)
-texts = data.astype(str).agg(" ".join, axis=1).tolist()
-
-# Set up OpenAI embeddings and create vectorstore
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
+st.image("socialai.jpg")
+file = r'dealer_1_inventry.csv'
+loader = CSVLoader(file_path=file)
+docs = loader.load()
 embeddings = OpenAIEmbeddings()
-vectorstore = FAISS.from_texts(texts, embeddings)
+vectorstore = FAISS.from_documents(docs, embeddings)
 retriever = vectorstore.as_retriever(search_type="similarity", k=8)
-
-# Create the conversational retrieval chain
-qa = ConversationalRetrievalChain.from_llm(
-    llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo-16k'),
-    retriever=retriever
-)
-
 # Streamlit UI setup
-st.info("Introducing Engage.ai, your cutting-edge partner in streamlining dealership and customer-related operations. ...")  
-
-
+st.info("Introducing Engage.ai, your cutting-edge partner in streamlining dealership and customer-related operations. At Engage, we specialize in harnessing the power of automation to revolutionize the way dealerships and customers interact. Our advanced solutions seamlessly handle tasks, from managing inventory and customer inquiries to optimizing sales processes, all while enhancing customer satisfaction. Discover a new era of efficiency and convenience with us as your trusted automation ally. [engane.ai](https://funnelai.com/). For this demo application, we will use the Inventory Dataset. Please explore it [here](https://github.com/ShahVishs/workflow/blob/main/2013_Inventory.csv) to get a sense for what questions you can ask.")  
 # Initialize session state
 if 'history' not in st.session_state:
     st.session_state.history = []
@@ -41,6 +29,20 @@ if 'generated' not in st.session_state:
     st.session_state.generated = []
 if 'past' not in st.session_state:
     st.session_state.past = []
+
+# Initialize conversation history with intro_prompt
+custom_template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. At the end of standalone question add this 'Answer the question in english language.' If you do not know the answer reply with 'I am sorry'.
+Chat History:
+{chat_history}
+Follow Up Input: {question}
+Standalone question:"""
+CUSTOM_QUESTION_PROMPT = PromptTemplate.from_template(custom_template)
+qa = ConversationalRetrievalChain.from_llm(
+    llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo-16k'),
+    retriever=retriever,
+    condense_question_prompt=CUSTOM_QUESTION_PROMPT
+#     return_source_documents=True
+)
 
 # Initialize user name in session state
 if 'user_name' not in st.session_state:
