@@ -17,7 +17,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chains import ConversationalRetrievalChain
 from langchain.document_loaders.csv_loader import CSVLoader
-# from langchain.vectorstores import FAISS
+from langchain.vectorstores import FAISS
 from langchain.vectorstores import Chroma
 from langchain import PromptTemplate
 import tempfile
