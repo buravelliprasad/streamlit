@@ -23,7 +23,7 @@ from langchain import PromptTemplate
 import tempfile
 import pandas as pd
 import os
-
+os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
 # Load CSV data
 file = r'C:\Users\Prasad\Desktop\Streamlit_ai\dealer_1_inventry.csv'
