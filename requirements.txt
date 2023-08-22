@@ -5,4 +5,4 @@ tiktoken
 pandas
 tabulate
 streamlit_chat
-chroma
+chromadb 
