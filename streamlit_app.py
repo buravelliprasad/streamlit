@@ -12,6 +12,7 @@ from langchain import PromptTemplate
 import tempfile
 import pandas as pd
 import os
+import csv
 os.environ['OPENAI_API_KEY'] = st.secrets['OPENAI_API_KEY']
 st.image("socialai.jpg")
 file = r'dealer_1_inventry.csv'
