@@ -28,17 +28,19 @@ st.image("socialai.jpg")
 # Load CSV data
 file = r'dealer_1_inventry.csv'
 loader = CSVLoader(file_path=file)
-dealer_1 = loader.load()
+docs = loader.load()
 
 # Set up OpenAI embeddings and create vectorstore
 embeddings = OpenAIEmbeddings()
+vectorstore = FAISS.from_documents(docs, embeddings)
+# vectorstore = FAISS.from_texts(texts, embeddings)
 # persist_directory = r'dealer1\inventry'
-persist_directory = os.path.join(os.getcwd(), 'dealer1', 'inventry')
-vectordb = Chroma(
-    persist_directory=persist_directory,
-    embedding_function=embeddings
-)
-retriever = vectordb.as_retriever(search_type="similarity", k=8)
+# persist_directory = os.path.join(os.getcwd(), 'dealer1', 'inventry')
+# vectordb = Chroma(
+#     persist_directory=persist_directory,
+#     embedding_function=embeddings
+# )
+retriever = vectorstore.as_retriever(search_type="similarity", k=8)
 # qa = ConversationalRetrievalChain.from_llm(
 #     llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo-16k'),
 #     retriever=retriever
