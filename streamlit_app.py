@@ -30,25 +30,9 @@ if 'generated' not in st.session_state:
     st.session_state.generated = []
 if 'past' not in st.session_state:
     st.session_state.past = []
-
-# Initialize conversation history with intro_prompt
-custom_template = """Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question. At the end of standalone question add this 'Answer the question in english language.' If you do not know the answer reply with 'I am sorry'.
-Chat History:
-{chat_history}
-Follow Up Input: {question}
-Standalone question:"""
-CUSTOM_QUESTION_PROMPT = PromptTemplate.from_template(custom_template)
-qa = ConversationalRetrievalChain.from_llm(
-    llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo-16k'),
-    retriever=retriever,
-    condense_question_prompt=CUSTOM_QUESTION_PROMPT
-#     return_source_documents=True
-)
-
 # Initialize user name in session state
 if 'user_name' not in st.session_state:
     st.session_state.user_name = None
-
 def save_chat_to_csv(user_name, user_input, output):
     with open("conversation_history.csv", mode="a", newline="") as csvfile:
         fieldnames = ["user_name", "question", "answer"]
@@ -64,12 +48,14 @@ Chat History:
 Follow Up Input: {question}
 Standalone question:"""
 CUSTOM_QUESTION_PROMPT = PromptTemplate.from_template(custom_template)
+# Model details
 qa = ConversationalRetrievalChain.from_llm(
     llm=ChatOpenAI(temperature=0.0, model_name='gpt-3.5-turbo-16k'),
     retriever=retriever,
     condense_question_prompt=CUSTOM_QUESTION_PROMPT
 #     return_source_documents=True
 )
+
 response_container = st.container()
 container = st.container()
 chat_history=[] 
@@ -78,6 +64,7 @@ def conversational_chat(query):
     result = qa({"question": query, "chat_history": chat_history})
     st.session_state.history.append((query, result["answer"]))
     return result["answer"]
+    
 
 with container:
     
