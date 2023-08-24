@@ -89,7 +89,7 @@ chat_history=[]
 def conversational_chat(user_input):
     result = qa({"question": user_input, "chat_history": st.session_state.chat_history})
     # print("this is testing chat history",result)
-    st.session_state.history.append((user_input, result["answer"]))
+    st.session_state.chat_history.append((user_input, result["answer"]))
     return result["answer"]
     
 with container:
