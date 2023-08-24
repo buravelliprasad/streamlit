@@ -79,10 +79,16 @@ qa = ConversationalRetrievalChain.from_llm(
 )
 response_container = st.container()
 container = st.container()
-chat_history=[] 
+# chat_history=[] 
+# def conversational_chat(query):
+#     result = qa({"question": query, "chat_history": chat_history})
+#     chat_history.append((query, result["answer"])) 
+#     st.session_state.history.append((query, result["answer"]))
+#     return result["answer"]
+    chat_history=[] 
 def conversational_chat(query):
-    result = qa({"question": query, "chat_history": chat_history})
-    chat_history.append((query, result["answer"])) 
+    result = qa({"question": query, "chat_history": st.session_state.history})
+    # print("this is testing chat history",result)
     st.session_state.history.append((query, result["answer"]))
     return result["answer"]
     
