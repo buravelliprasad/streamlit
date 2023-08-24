@@ -85,7 +85,7 @@ container = st.container()
 #     chat_history.append((query, result["answer"])) 
 #     st.session_state.history.append((query, result["answer"]))
 #     return result["answer"]
-    chat_history=[] 
+chat_history=[] 
 def conversational_chat(query):
     result = qa({"question": query, "chat_history": st.session_state.history})
     # print("this is testing chat history",result)
