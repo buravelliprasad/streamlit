@@ -28,7 +28,7 @@ retriever = vectorstore.as_retriever(search_type="similarity", k=8)
 # Streamlit UI setup
 st.info(" We're developing cutting-edge conversational AI solutions tailored for automotive retail, aiming to provide advanced products and support. As part of our progress, we're establishing a environment to check offerings and also check Our website [engane.ai](https://funnelai.com/). This test application answers about Inventry, Business details, Financing and Discounts and Offers related questions. [here](https://github.com/buravelliprasad/streamlit/blob/main/dealer_1_inventry.csv) is a inventry dataset explore and play with the data.")
 # Initialize session state
-if 'history' not in st.session_state:
+if 'chat_history' not in st.session_state:
     st.session_state.history = []
 if 'generated' not in st.session_state:
     st.session_state.generated = []
@@ -86,10 +86,10 @@ container = st.container()
 #     st.session_state.history.append((query, result["answer"]))
 #     return result["answer"]
 chat_history=[] 
-def conversational_chat(query):
-    result = qa({"question": query, "chat_history": st.session_state.history})
+def conversational_chat(user_input):
+    result = qa({"question": user_input, "chat_history": st.session_state.history})
     # print("this is testing chat history",result)
-    st.session_state.history.append((query, result["answer"]))
+    st.session_state.history.append((user_input, result["answer"]))
     return result["answer"]
     
 with container:
@@ -108,7 +108,7 @@ with container:
         
         # Display conversation history with proper differentiation
         with response_container:
-            for i, (query, answer) in enumerate(st.session_state.history):
+            for i, (query, answer) in enumerate(st.session_state.chat_history):
                 message(query, is_user=True, key=f"{i}_user", avatar_style="big-smile")
                 message(answer, key=f"{i}_answer", avatar_style="thumbs")
         
